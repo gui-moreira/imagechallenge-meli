@@ -15,15 +15,15 @@ func (s *square) getUpperLeftColor() color.Color {
 }
 
 func (s *square) getUpperRightColor() color.Color {
-	return s.img.At(48, 0)
+	return s.img.At(47, 0)
 }
 
 func (s *square) getBottomLeftColor() color.Color {
-	return s.img.At(0, 48)
+	return s.img.At(0, 47)
 }
 
 func (s *square) getBottomRightColor() color.Color {
-	return s.img.At(48, 48)
+	return s.img.At(47, 47)
 }
 
 func getSquares(img image.Image) []*square {
