@@ -7,23 +7,24 @@ import (
 )
 
 type square struct {
-	img image.Image
+	img  image.Image
+	used bool
 }
 
 func (s *square) getUpperLeftColor() color.Color {
-	return s.img.At(0, 0)
+	return s.img.At(2, 2)
 }
 
 func (s *square) getUpperRightColor() color.Color {
-	return s.img.At(47, 0)
+	return s.img.At(46, 2)
 }
 
 func (s *square) getBottomLeftColor() color.Color {
-	return s.img.At(0, 47)
+	return s.img.At(2, 46)
 }
 
 func (s *square) getBottomRightColor() color.Color {
-	return s.img.At(47, 47)
+	return s.img.At(46, 46)
 }
 
 func getSquares(img image.Image) []*square {
@@ -37,7 +38,7 @@ func getSquares(img image.Image) []*square {
 			m := image.NewRGBA(image.Rect(0, 0, 49, 49))
 			draw.Draw(m, image.Rect(0, 0, 49, 49), img, image.Point{cursorX + 1, cursorY + 1}, draw.Src)
 
-			squares = append(squares, &square{img: m})
+			squares = append(squares, &square{img: m, used: false})
 
 			cursorX += 50
 		}

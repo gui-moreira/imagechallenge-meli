@@ -29,11 +29,21 @@ func main() {
 
 	allSquares = getSquares(src)
 
+	//testPrintAll()
 	formedImage[0][0] = findFirst()
 	fillSquares(0, 1)
-
 	writeToFile(generateImage())
-	//fmt.Println(src.At(49, 51))
+}
+
+func testPrintAll() {
+	count := 0
+	for i := 0; i < 20; i++ { // line
+		for j := 0; j < 20; j++ { //column
+			formedImage[i][j] = allSquares[count]
+			count++
+		}
+	}
+	writeToFile(generateImage())
 }
 
 func findFirst() *square {
@@ -73,18 +83,25 @@ func fillSquares(i, j int) bool { // i = line, j = column
 
 	fmt.Println(i, j)
 
-	for ix, s := range allSquares {
-		if fits(i, j, s) {
+	if j == 12 || i == 12 {
+		writeToFile(generateImage())
+	}
+
+	for _, s := range allSquares {
+		if !s.used && fits(i, j, s) {
+			//fmt.Println("new fit", i, j)
 			formedImage[i][j] = s
-			allSquares = append(allSquares[:ix], allSquares[ix+1:]...)
+			s.used = true
 
 			if fillSquares(i+1, j-1) {
 				return true
 			}
 		}
+		formedImage[i][j] = nil
+		s.used = false
 	}
 
-	fmt.Println("did not find fit")
+	//fmt.Println("did not find fit")
 
 	return false
 }
@@ -145,7 +162,7 @@ func fits(i, j int, s *square) bool {
 }
 
 func generateImage() image.Image {
-	img := image.NewRGBA(image.Rect(0, 0, 960, 960))
+	img := image.NewRGBA(image.Rect(0, 0, 980, 980))
 
 	for i := 0; i < 20; i++ { // line
 		for j := 0; j < 20; j++ { //column
