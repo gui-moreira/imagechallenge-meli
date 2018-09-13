@@ -32,7 +32,7 @@ func main() {
 	//testPrintAll()
 	formedImage[0][0] = findFirst()
 	fillSquares(0, 1)
-	writeToFile(generateImage())
+	//writeToFile(generateImage())
 }
 
 func testPrintAll() {
@@ -63,7 +63,7 @@ func fillSquares(i, j int) bool { // i = line, j = column
 	}
 
 	// find next empty
-	if i == -1 || j == -1 {
+	if i == -1 || j == -1 || i == 20 || j == 20 {
 		for ix, line := range formedImage {
 			found := false
 			for jx, s := range line {
@@ -83,7 +83,7 @@ func fillSquares(i, j int) bool { // i = line, j = column
 
 	fmt.Println(i, j)
 
-	if j == 12 || i == 12 {
+	if j == 19 && i == 12 {
 		writeToFile(generateImage())
 	}
 
@@ -111,31 +111,45 @@ func fits(i, j int, s *square) bool {
 	// fill first line
 	if i == 0 {
 		previousLeft := formedImage[i][j-1]
-		if previousLeft == nil {
-			//fmt.Println("left null")
+		if j == 19 {
+			if isBlackOrWhite(s.getUpperLeftColor()) &&
+				isBlackOrWhite(s.getUpperRightColor()) &&
+				!isBlackOrWhite(s.getBottomLeftColor()) &&
+				isBlackOrWhite(s.getBottomRightColor()) &&
+				s.getBottomLeftColor() == previousLeft.getBottomRightColor() {
+				return true
+			}
+		} else {
+			if isBlackOrWhite(s.getUpperLeftColor()) &&
+				isBlackOrWhite(s.getUpperRightColor()) &&
+				!isBlackOrWhite(s.getBottomLeftColor()) &&
+				!isBlackOrWhite(s.getBottomRightColor()) &&
+				s.getBottomLeftColor() == previousLeft.getBottomRightColor() {
+				return true
+			}
 		}
 
-		if isBlackOrWhite(s.getUpperLeftColor()) &&
-			isBlackOrWhite(s.getUpperRightColor()) &&
-			!isBlackOrWhite(s.getBottomLeftColor()) &&
-			!isBlackOrWhite(s.getBottomRightColor()) &&
-			s.getBottomLeftColor() == previousLeft.getBottomRightColor() {
-			return true
-		}
 	}
 
 	// fill first column
 	if j == 0 {
 		previousTop := formedImage[i-1][j]
-		if previousTop == nil {
-			//fmt.Println("top null")
-		}
-		if isBlackOrWhite(s.getUpperLeftColor()) &&
-			isBlackOrWhite(s.getBottomLeftColor()) &&
-			!isBlackOrWhite(s.getUpperRightColor()) &&
-			!isBlackOrWhite(s.getBottomRightColor()) &&
-			s.getUpperRightColor() == previousTop.getBottomRightColor() {
-			return true
+		if i == 19 {
+			if isBlackOrWhite(s.getUpperLeftColor()) &&
+				isBlackOrWhite(s.getBottomLeftColor()) &&
+				!isBlackOrWhite(s.getUpperRightColor()) &&
+				isBlackOrWhite(s.getBottomRightColor()) &&
+				s.getUpperRightColor() == previousTop.getBottomRightColor() {
+				return true
+			}
+		} else {
+			if isBlackOrWhite(s.getUpperLeftColor()) &&
+				isBlackOrWhite(s.getBottomLeftColor()) &&
+				!isBlackOrWhite(s.getUpperRightColor()) &&
+				!isBlackOrWhite(s.getBottomRightColor()) &&
+				s.getUpperRightColor() == previousTop.getBottomRightColor() {
+				return true
+			}
 		}
 	}
 
