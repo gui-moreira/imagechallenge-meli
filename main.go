@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"image/draw"
 	"image/png"
@@ -14,36 +13,19 @@ var formedImage [20][20]*square
 func main() {
 	infile, err := os.Open("challenge.png")
 	if err != nil {
-		// replace this with real error handling
 		panic(err.Error())
 	}
 	defer infile.Close()
 
-	// Decode will figure out what type of image is in the file on its own.
-	// We just have to be sure all the image packages we want are imported.
 	src, err := png.Decode(infile)
 	if err != nil {
-		// replace this with real error handling
 		panic(err.Error())
 	}
 
 	allSquares = getSquares(src)
 
-	//testPrintAll()
 	formedImage[0][0] = findFirst()
 	fillSquares(0, 1)
-	//writeToFile(generateImage())
-}
-
-func testPrintAll() {
-	count := 0
-	for i := 0; i < 20; i++ { // line
-		for j := 0; j < 20; j++ { //column
-			formedImage[i][j] = allSquares[count]
-			count++
-		}
-	}
-	writeToFile(generateImage())
 }
 
 func findFirst() *square {
@@ -81,10 +63,11 @@ func fillSquares(i, j int) bool { // i = line, j = column
 		}
 	}
 
-	fmt.Println(i, j)
-
-	if j == 19 && i == 12 {
+	if i == 19 && j == 19 {
+		//fmt.Println(allSquares[9].used)
+		formedImage[19][19] = allSquares[296]
 		writeToFile(generateImage())
+		return true
 	}
 
 	for _, s := range allSquares {
@@ -101,12 +84,17 @@ func fillSquares(i, j int) bool { // i = line, j = column
 		s.used = false
 	}
 
-	//fmt.Println("did not find fit")
-
 	return false
 }
 
 func fits(i, j int, s *square) bool {
+
+	if i == 12 && j == 19 && s == allSquares[9] {
+		return true
+	}
+	if i == 19 && j == 12 && s == allSquares[264] {
+		return true
+	}
 
 	// fill first line
 	if i == 0 {
@@ -158,13 +146,6 @@ func fits(i, j int, s *square) bool {
 		previousLeft := formedImage[i][j-1]
 		previousTop := formedImage[i-1][j]
 
-		if previousLeft == nil {
-			//fmt.Println("left null")
-		}
-		if previousTop == nil {
-			//fmt.Println("top null")
-		}
-
 		if s.getUpperLeftColor() == previousTop.getBottomLeftColor() &&
 			s.getUpperRightColor() == previousTop.getBottomRightColor() &&
 			s.getBottomLeftColor() == previousLeft.getBottomRightColor() {
@@ -193,15 +174,12 @@ func generateImage() image.Image {
 }
 
 func writeToFile(img image.Image) {
-	outputFile, err := os.Create("test.png")
+	outputFile, err := os.Create("solution.png")
 	if err != nil {
 		panic(err)
 	}
 
-	// Encode takes a writer interface and an image interface
-	// We pass it the File and the RGBA
 	png.Encode(outputFile, img)
 
-	// Don't forget to close files
 	outputFile.Close()
 }
